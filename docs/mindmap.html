@@ -173,6 +173,26 @@
 - Retry Mechanism
 - Graceful Degradation
 
+### Capability-Specific Performance
+#### RAG Performance
+- Retrieval Latency
+- Indexing Throughput
+- Embedding Cost
+- Chunk Size vs Accuracy Tradeoff
+#### Agent Performance
+- Per-Turn Latency
+- Cumulative Turn Cost
+- Multi-Agent Coordination Overhead
+- Tool Call Parallelism Gains
+#### Tool Execution Performance
+- Tool Call Latency
+- Sequential vs Parallel Execution
+- External API Rate Limits
+#### Multimodal Performance
+- Audio/Image Processing Latency
+- Token Cost for Visual Inputs
+- Streaming Latency for Voice
+
 ## 4. Safety
 
 ### Prompt & Output Guardrails
@@ -195,6 +215,24 @@
 - Toxic Output Detection
 - Harmful Content Filtering
 - Sensitive Topic Handling
+
+### Capability-Specific Safety
+#### RAG Safety
+- Document/Index Poisoning
+- Retrieved Content Leakage
+- Adversarial Retrieval
+#### Agent Safety
+- Action Boundary Enforcement
+- Autonomy & Budget Limits
+- Runaway Prevention & Scope Drift
+#### Tool Safety
+- Tool Boundary Enforcement
+- Auth/Permission Correctness
+- Harmful Action Prevention
+#### Memory Safety
+- Stored PII Management
+- Memory Poisoning
+- Cross-Session Leakage
 `;
 
     const { Transformer } = window.markmap;
