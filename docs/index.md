@@ -2,40 +2,59 @@
 layout: default
 title: Home
 nav_order: 1
-description: "Gen AI Applications Evaluation Guidelines - A comprehensive guide to evaluating Gen AI applications"
+description: "GenAI Applications Evaluation Guidelines - A structured guide to evaluating GenAI applications"
 permalink: /
 ---
 
-# Gen AI Applications Evaluation Guidelines
+# GenAI Applications Evaluation Guidelines
 
-Welcome to the **Gen AI Applications Evaluation Guidelines** repository.
+GenAI teams are moving fast — but evaluation often remains ad hoc.
 
-At the core of every Gen AI application is a Large Language Model — and LLMs are **non-deterministic by nature**. In traditional software, you have defined inputs and expected outputs: if X happens, Z should be the result, and you can pass or fail accordingly. With LLMs, the same query can produce different responses every time. This is what makes them powerful, but it's also what makes them unpredictable.
+Unlike traditional software, GenAI applications are not always easy to test with simple input-output assertions. The same prompt can produce different valid responses, and quality often depends on hidden or intermediate steps: retrieved context, tool calls, memory state, agent handoffs, safety checks, and more.
 
-Because of this, **testing becomes even more critical before anything moves to production**. Without proper evaluation, you're shipping software that you can't reliably verify — and that's a risk no team scaling a Gen AI product can afford.
+That makes evaluation harder — but also more important.
 
-This guide is built for anyone who wants to **scale their Gen AI products with proper evaluation in place**. It covers the areas that should be evaluated, provides a brief and precise introduction to each area with concrete examples, and includes code snippet examples you can view and use as a head start on your own implementation.
+This guide provides a structured way to think about GenAI evaluation across common application patterns, including RAG, tool use, memory, agents, multimodal systems, performance, and safety.
 
-<a href="./mindmap.html" target="_blank">🗺️ View the interactive mindmap of all evaluation areas →</a>
+It is designed to help teams answer:
+
+- **What should we evaluate for this application?**
+- **Which method should we use** — manual review, code-based checks, LLM-as-judge, or a combination?
+- **How can we start implementing these evaluations** in a repeatable way?
+
+<a href="./mindmap.html" target="_blank">View the interactive mind map of all evaluation areas to see the overall organization of this guide →</a>
+
+---
+
+## How to Use This Guide
+
+Start with **[Strategy](./strategy)** if you are defining an evaluation approach from scratch.
+
+Then jump to the areas that match your application:
+
+- **Building a RAG app?** Look at [retrieval quality, context relevance, faithfulness, citations, and hallucination](./accuracy/context-sourcing).
+- **Using tools or APIs?** Evaluate [tool selection, parameter correctness, execution success, and recovery from failures](./accuracy/agentic).
+- **Using memory?** Check [what gets stored, what gets retrieved, and whether memory introduces privacy, poisoning, or stale-context risks](./accuracy/memory).
+- **Building agents?** Evaluate not only the final answer, but also the [trajectory: handoffs, intermediate decisions, role adherence, and unnecessary steps](./accuracy/agentic).
+- **Preparing for production?** Use the [Performance](./performance) and [Safety](./safety) sections to evaluate latency, cost, reliability, guardrails, privacy, and harmful-output risks.
 
 ---
 
 ## How This Guide Is Organized
 
-| Pillar | What It Covers |
-|--------|----------------|
-| **[1. Strategy](./strategy)** | The high-level "how" of evaluation — what types of evaluation exist, how to build test datasets, how to score and interpret results |
-| **[2. Accuracy](./accuracy)** | The specific areas that should be evaluated in a Gen AI application — from simple single-LLM apps to data-source-backed systems (RAG, databases, APIs) and multi-agent pipelines |
-| **[3. Performance](./performance)** | A comprehensive writeup on measuring and optimizing latency, cost, throughput, and reliability under real-world conditions |
-| **[4. Safety](./safety)** | The responsible AI perspective — guardrails, privacy, bias & fairness, and content safety, covered in detail |
+| Section | What It Covers |
+|---------|----------------|
+| **[Strategy](./strategy)** | Evaluation methods, test data, ground truth, scoring, LLM-as-judge, human review, and code-based checks |
+| **[Accuracy](./accuracy)** | Capability-specific evaluation for LLM responses, RAG, context provision, tool use, memory, multimodal systems, and agents |
+| **[Performance](./performance)** | Latency, cost, throughput, reliability, and scalability under realistic usage conditions |
+| **[Safety](./safety)** | Guardrails, privacy, bias and fairness, harmful content, prompt injection, and data leakage |
 
-## Quick Start
-
-1. **Start with Strategy**: Define your evaluation methods, test sets, and scoring approach
-2. **Measure Accuracy**: Pick the capability areas relevant to your app (RAG, agents, multi-modal, etc.)
-3. **Benchmark Performance**: Establish latency, cost, and reliability baselines
-4. **Validate Safety**: Run guardrail, privacy, bias, and content safety checks
+Each leaf node in the mind map links to a short practical guide. Some include code snippets or implementation examples that teams can adapt as a starting point.
 
 ---
 
-**Start here:** [1. Strategy →](./strategy)
+The goal is not to prescribe one universal recipe. GenAI applications vary too much for that.
+
+The goal is to help teams stop winging evaluation — and start making quality measurable, repeatable, and easier to discuss.
+
+**Start here:** [Strategy →](./strategy)

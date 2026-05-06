@@ -282,4 +282,58 @@ Ensure the model does not generate toxic, harmful, or inappropriate content — 
 
 ---
 
+## Capability-Specific Safety
+
+Safety risks vary significantly by capability. RAG introduces data poisoning risks, agents introduce autonomy risks, tools introduce authorization risks, and memory introduces long-term privacy concerns. This section covers safety considerations unique to each architectural capability.
+
+---
+
+### RAG Safety
+
+Risks introduced by the retrieval pipeline: adversarial documents, indirect prompt injection via retrieved content, and leakage of retrieved data.
+
+| Risk | What It Covers | Why It Matters |
+|------|---------------|----------------|
+| **Document/Index Poisoning** | Malicious documents inserted into the knowledge base that corrupt outputs | An attacker can insert adversarial documents that influence answers, inject instructions, or cause data exfiltration. Test by inserting adversarial documents and checking if they influence responses |
+| **Retrieved Content Leakage** | Exposing raw retrieved content that the user shouldn't see | For access-controlled corpora, verify that retrieval respects document-level permissions. Users should not see content from documents they're not authorized to access |
+| **Adversarial Retrieval** | Crafted queries that trick the retriever into surfacing inappropriate documents | Queries can be designed to game semantic similarity and bypass filters. Test with queries designed to surface off-limits content |
+
+---
+
+### Agent Safety
+
+Agents can take real-world actions, making safety failures much more consequential than for simple chat applications.
+
+| Risk | What It Covers | Why It Matters |
+|------|---------------|----------------|
+| **Action Boundary Enforcement** | Verifying the agent only takes actions within its permitted scope | Test by presenting tasks that require out-of-scope actions and verifying the agent refuses or escalates appropriately |
+| **Autonomy & Budget Limits** | Ensuring budget controls (max turns, token limits, time caps) actually stop runaway agents | Test by creating scenarios that would exceed limits and verifying enforcement. Unlimited agents can spiral into high costs or unintended actions |
+| **Runaway Prevention & Scope Drift** | Detecting when agents drift into unrelated actions over long runs | Test with extended multi-turn scenarios and measure goal adherence over time. Long-running agents can gradually drift from their assigned task |
+
+---
+
+### Tool Safety
+
+Tools give agents real-world capabilities, so tool safety is about preventing unauthorized or harmful real-world effects.
+
+| Risk | What It Covers | Why It Matters |
+|------|---------------|----------------|
+| **Tool Boundary Enforcement** | Ensuring the agent can only invoke tools it's been explicitly granted | Test by prompting the agent to use tools outside its allowlist and verifying it cannot. Tool allowlists should be strictly enforced |
+| **Auth/Permission Correctness** | Tool layer correctly enforces authentication and authorization | Test that tool calls respect user permissions and don't escalate privileges. A user shouldn't be able to perform actions through tools that they couldn't perform directly |
+| **Harmful Action Prevention** | Preventing agents from being tricked into destructive actions | Test with adversarial prompts that attempt to trigger harmful tool calls (deleting data, sending unauthorized messages, accessing restricted resources) |
+
+---
+
+### Memory Safety
+
+Persistent memory introduces long-term safety risks that don't exist in stateless systems.
+
+| Risk | What It Covers | Why It Matters |
+|------|---------------|----------------|
+| **Stored PII Management** | Ensuring the memory system doesn't store sensitive personal data that should be excluded | Verify PII filtering on storage and compliance with right-to-deletion requests. Memory systems should not become unauthorized PII repositories |
+| **Memory Poisoning** | Adversarial interactions that inject false information into persistent memory | Test by attempting to store misleading facts and checking if they corrupt later outputs. Poisoned memories can influence future sessions long after the attack |
+| **Cross-Session Leakage** | One user's stored memories leaking into another user's session | Critical for multi-tenant systems. Test with concurrent sessions and verify memory isolation. User A should never see information stored by User B |
+
+---
+
 **← Previous:** [3. Performance](../performance) · **Home:** [Gen AI Applications Evaluation Guidelines](../)

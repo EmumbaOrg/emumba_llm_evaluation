@@ -114,4 +114,60 @@ How does the system behave when things go wrong?
 
 ---
 
+## Capability-Specific Performance
+
+Performance metrics vary significantly by capability. Evaluating RAG latency is a different exercise from evaluating agent loop cost. This section covers performance considerations unique to each architectural capability.
+
+---
+
+### RAG Performance
+
+RAG applications add retrieval and embedding steps that often dominate latency and cost.
+
+| Metric | What It Measures | Why It Matters |
+|--------|-----------------|----------------|
+| **Retrieval Latency** | Time for the vector database query to return results | Affected by index size, query complexity, and metadata filtering. Typically 50–200ms but can spike with large indexes |
+| **Indexing Throughput** | How fast new documents can be ingested, chunked, embedded, and indexed | Determines how fresh your knowledge base can be. Batch vs streaming ingestion have very different profiles |
+| **Embedding Cost** | Cost of embedding queries and documents | Embedding models are cheap per call but expensive at scale—millions of documents or high query volume can dominate your bill |
+| **Chunk Size vs Accuracy Tradeoff** | How chunk size affects retrieval accuracy and token usage | Smaller chunks improve precision but increase retrieval calls and context assembly complexity. Larger chunks reduce calls but may include noise. Profile this tradeoff empirically for your data |
+
+---
+
+### Agent Performance
+
+Agents multiply costs and latency by the number of turns. A 10-turn agent is roughly 10x the cost and latency of a single call.
+
+| Metric | What It Measures | Why It Matters |
+|--------|-----------------|----------------|
+| **Per-Turn Latency** | Time for each individual agent turn (model inference + tool execution) | Total task time equals the sum of turn latencies. Track both individual turns and cumulative task duration |
+| **Cumulative Turn Cost** | Total token cost across all turns in a task | Grows linearly (or worse) with turn count. Multi-step agents can consume 10x+ the tokens of a single call |
+| **Multi-Agent Coordination Overhead** | Latency and token cost added by handoffs and shared-state synchronization | When multiple agents collaborate, measure the overhead of coordination itself, separate from the work done |
+| **Tool Call Parallelism Gains** | Latency reduction from running independent tool calls concurrently | Agents that issue multiple independent tool calls in parallel can dramatically reduce latency. Measure the speedup from parallel vs sequential execution |
+
+---
+
+### Tool Execution Performance
+
+Tool calls are often the latency bottleneck in agent systems. A slow external API can dominate total response time.
+
+| Metric | What It Measures | Why It Matters |
+|--------|-----------------|----------------|
+| **Tool Call Latency** | Time from issuing a tool call to receiving the result | Profile each tool individually—some take milliseconds, others seconds. Slow tools are candidates for caching or timeouts |
+| **Sequential vs Parallel Execution** | Latency difference between running tools one at a time vs concurrently | Measure the gap between sequential and parallel execution for your common tool combinations |
+| **External API Rate Limits** | How close you run to provider rate limits | External services impose rate limits that can bottleneck your agent. Monitor utilization and implement backoff/queuing before you hit them |
+
+---
+
+### Multimodal Performance
+
+Non-text modalities have distinct performance profiles: images consume many tokens, audio requires real-time processing, and generated media is slow.
+
+| Metric | What It Measures | Why It Matters |
+|--------|-----------------|----------------|
+| **Audio/Image Processing Latency** | Processing time for STT, TTS, and vision model inference | Audio processing needs to be near real-time for voice agents; image processing adds seconds per image |
+| **Token Cost for Visual Inputs** | Token consumption for image inputs | Images consume significantly more tokens than equivalent text descriptions. A single high-res image can use 1000+ tokens. Budget visual token costs carefully |
+| **Streaming Latency for Voice** | Mouth-to-ear latency (time from user finishing speaking to hearing first word of response) | For voice agents, target under 500ms for natural conversation. Higher latency breaks conversational flow |
+
+---
+
 **← Previous:** [2. Accuracy](../accuracy) · **Next:** [4. Safety →](../safety)
