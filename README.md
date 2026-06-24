@@ -1,13 +1,13 @@
-# Gen AI Applications Evaluation Guidelines
+# Gen AI Evaluation Guidelines
 
-A comprehensive, end-to-end guide to evaluating Gen AI applications.
+A comprehensive, end-to-end guide to evaluating Gen AI applications and selecting the right LLM models.
 
 [![GitHub Pages](https://img.shields.io/badge/docs-GitHub%20Pages-blue)](https://WisamulHaque.github.io/emumba_llm_evaluation/)
 [![License](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 
 ## 📖 Overview
 
-This repository provides a structured evaluation framework for LLM-powered applications, organized around **four pillars**: Strategy, Accuracy, Performance, and Safety. Whether you're building RAG systems, multi-agent pipelines, chatbots, or other LLM applications, you'll find evaluation areas, metrics, worked examples, and code evaluators here.
+This repository provides a structured evaluation framework organized around **two pillars**: **Application Evaluation** (strategy, accuracy, performance, safety) and **Model Evaluation** (model selection and comparison). Whether you're building RAG systems, multi-agent pipelines, chatbots, or selecting between LLMs, you'll find evaluation areas, metrics, worked examples, and code evaluators here.
 
 ## 🚀 Quick Start
 
@@ -55,6 +55,7 @@ emumba_llm_evaluation/
 │   │       └── multi-modal.md             #    Multi-Modal I/O
 │   ├── performance.md                     # 3. Performance
 │   ├── safety.md                          # 4. Safety
+│   ├── model-evaluation.md                # Model Evaluation (selection & comparison)
 │   └── mindmap.html                       # Interactive mindmap
 │
 ├── examples/                              # Code evaluators
@@ -74,7 +75,9 @@ emumba_llm_evaluation/
 └── README.md                              # This file
 ```
 
-## 🗺️ The Four Pillars
+## 🗺️ Guide Structure
+
+### A. Application Evaluation
 
 | Pillar | Focus | Key Areas |
 |--------|-------|-----------|
@@ -83,9 +86,15 @@ emumba_llm_evaluation/
 | **[3. Performance](docs/performance.md)** | Is it fast & efficient? | Latency (TTFT, E2E), cost, context efficiency, load testing, reliability |
 | **[4. Safety](docs/safety.md)** | Is it safe & trustworthy? | Guardrails, privacy, bias & fairness, content safety |
 
+### B. Model Evaluation
+
+| Pillar | Focus | Key Areas |
+|--------|-------|-----------|
+| **[Model Evaluation](docs/model-evaluation.md)** | Which model to choose? | Dataset curation, accuracy, performance, cost, guardrails |
+
 ## 🔧 Key Evaluation Areas
 
-### Accuracy — Capability Evaluation
+### Application — Accuracy
 - **Response Quality**: Task quality, instruction following, factuality, consistency
 - **Context Sourcing**: RAG sourcing (recall, precision), non-RAG sourcing (API selection, parameter accuracy, query generation)
 - **Grounded Accuracy**: Faithfulness to context, citation correctness, hallucination detection
@@ -93,18 +102,25 @@ emumba_llm_evaluation/
 - **Agentic Evaluation**: Tool call accuracy, task adherence, trajectory quality (correctness + efficiency), plan quality
 - **Multi-Modal I/O**: Text (streaming stability, responsiveness), Voice (ASR, turn-taking, barge-in), Vision (visual tasks, OCR), Cross-modal stability
 
-### Performance
+### Application — Performance
 - **Latency**: TTFT, E2E latency, throughput, streaming stability, responsiveness
 - **Cost**: Per model call, E2E journey cost, token usage efficiency
 - **Context & Memory Efficiency**: K-sweep optimization, memory relevance curve
 - **Load Testing**: Concurrency limits, peak load behavior
 - **Reliability**: Retry mechanisms, graceful degradation
 
-### Safety
+### Application — Safety
 - **Guardrails**: Prompt injection, jailbreaking, policy compliance, ethical constraints
 - **Privacy**: PII protection, role-based access
 - **Bias & Fairness**: Demographic parity, stereotyping detection
 - **Content Safety**: Toxic output detection, harmful content filtering
+
+### Model Evaluation
+- **Dataset Curation**: Representative queries (simple, complex, edge cases), ground truth, guardrail test cases
+- **Accuracy**: Response correctness, hallucination rate, consistency across runs, edge case handling
+- **Performance**: TTFT, end-to-end latency, tokens per second, context window limits
+- **Cost**: Input/output token pricing, cost per request, scaling viability
+- **Guardrails**: Harmful content refusal, jailbreak resistance, prompt injection resistance, policy compliance
 
 ## 📦 Dependencies
 
@@ -122,4 +138,4 @@ MIT License - see [LICENSE](LICENSE) for details.
 
 ---
 
-**Built with ❤️ for the LLM community**
+**Built with ❤️ for the GenAI community**

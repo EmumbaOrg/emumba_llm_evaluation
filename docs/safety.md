@@ -336,4 +336,4 @@ Persistent memory introduces long-term safety risks that don't exist in stateles
 
 ---
 
-**← Previous:** [3. Performance](../performance) · **Home:** [Gen AI Applications Evaluation Guidelines](../)
+**← Previous:** [3. Performance](./performance) · **Next:** [Model Evaluation →](./model-evaluation)
