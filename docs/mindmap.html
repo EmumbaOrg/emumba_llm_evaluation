@@ -3,37 +3,127 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>LLM Evaluation Guidelines — Mindmap</title>
+  <title>Gen AI Evaluation Guidelines — Mindmap</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     html, body { width: 100%; height: 100%; overflow: hidden; }
     body {
       font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-      background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+      background: #f4f6f9;
+      color: #1e293b;
     }
-    #mindmap { width: 100%; height: 100%; }
 
-    /* ── Markmap node styling via CSS ── */
+    /* Header */
+    .header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 100;
+      padding: 20px 32px 12px;
+      background: #f4f6f9;
+      border-bottom: 1px solid #e2e8f0;
+    }
+    .header h1 {
+      font-size: 28px;
+      font-weight: 800;
+      color: #0f172a;
+      margin-bottom: 6px;
+    }
+    .header-about {
+      font-size: 13px;
+      font-weight: 600;
+      color: #334155;
+      cursor: pointer;
+      user-select: none;
+      margin-bottom: 4px;
+    }
+    .header-about::before {
+      content: '▶';
+      display: inline-block;
+      font-size: 9px;
+      margin-right: 6px;
+      transition: transform 0.2s;
+    }
+    .header-about.open::before {
+      transform: rotate(90deg);
+    }
+    .header-about-content {
+      display: none;
+      font-size: 12px;
+      color: #475569;
+      line-height: 1.6;
+      padding: 8px 0 4px 18px;
+      max-width: 600px;
+    }
+    .header-about-content.visible {
+      display: block;
+    }
+    .header-hint {
+      font-size: 12px;
+      color: #94a3b8;
+    }
 
-    /* Make all node text white & readable */
+    /* Controls */
+    .controls {
+      position: fixed;
+      top: 20px;
+      right: 32px;
+      z-index: 101;
+      display: flex;
+      gap: 8px;
+    }
+    .controls button {
+      padding: 7px 16px;
+      border-radius: 20px;
+      border: 1px solid #d1d5db;
+      background: #fff;
+      color: #374151;
+      font-size: 12px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.15s;
+      font-family: inherit;
+    }
+    .controls button:hover {
+      background: #f1f5f9;
+      border-color: #94a3b8;
+    }
+
+    /* Mindmap container */
+    #mindmap {
+      width: 100%;
+      height: 100%;
+      padding-top: 100px;
+    }
+
+    /* ── Markmap node styling ── */
+
+    .markmap-node foreignObject {
+      overflow: visible !important;
+    }
     .markmap-node foreignObject * {
-      color: #f1f5f9 !important;
+      color: #fff !important;
     }
     .markmap-node foreignObject > div {
-      color: #f1f5f9 !important;
-      font-size: 14px !important;
-      font-weight: 500 !important;
-      line-height: 1.4 !important;
-      background: transparent !important;
+      color: #fff !important;
+      font-size: 13px !important;
+      font-weight: 600 !important;
+      line-height: 1.6 !important;
       border: none !important;
-      box-shadow: none !important;
-      padding: 0 !important;
-      border-radius: 0 !important;
+      padding: 6px 16px !important;
+      border-radius: 20px !important;
       backdrop-filter: none !important;
       overflow: visible !important;
       white-space: nowrap !important;
+      display: inline-flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      text-align: center !important;
+      min-height: 28px !important;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.12) !important;
     }
 
     /* Hide the default bottom line under nodes */
@@ -41,15 +131,69 @@
 
     /* Style connecting paths */
     path.markmap-link {
-      stroke-width: 2.5 !important;
-      opacity: 0.5 !important;
+      stroke-width: 2 !important;
+      opacity: 0.4 !important;
     }
 
     /* Style expand/collapse circles */
     .markmap-node > circle {
       stroke-width: 2px !important;
-      fill: #1e1b4b !important;
+      fill: #fff !important;
+      stroke: #94a3b8 !important;
       cursor: pointer !important;
+      r: 5 !important;
+    }
+
+    /* Legend at bottom */
+    .legend {
+      position: fixed;
+      bottom: 20px;
+      left: 32px;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      font-size: 13px;
+      color: #475569;
+    }
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+    }
+    .legend-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+    }
+
+    /* Tooltip styling */
+    .mindmap-tooltip {
+      position: fixed;
+      max-width: 320px;
+      padding: 10px 14px;
+      background: #fff;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      color: #334155;
+      font-size: 12px;
+      line-height: 1.5;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.2s;
+      z-index: 1000;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+    }
+    .mindmap-tooltip.visible {
+      opacity: 1;
+    }
+
+    /* Clickable node link indicator */
+    .markmap-node[data-link] foreignObject {
+      cursor: pointer !important;
+    }
+    .markmap-node[data-link] foreignObject > div:hover {
+      filter: brightness(1.15) !important;
     }
   </style>
   <script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
@@ -57,44 +201,68 @@
   <script src="https://cdn.jsdelivr.net/npm/markmap-lib@0.15"></script>
 </head>
 <body>
+  <div class="header">
+    <h1>Gen AI Evaluation Framework</h1>
+    <div class="header-about" id="aboutToggle">About this Mindmap</div>
+    <div class="header-about-content" id="aboutContent">
+      This interactive mindmap covers the full Gen AI evaluation landscape — both <strong>Application Evaluation</strong> (strategy, accuracy, performance, safety) and <strong>Model Evaluation</strong> (selection &amp; comparison). Click any node with ↗ to jump to the relevant documentation page.
+    </div>
+    <p class="header-hint">Click nodes to expand / collapse · Scroll to zoom · Drag to pan</p>
+  </div>
+  <div class="controls">
+    <button id="btnExpand">Expand All</button>
+    <button id="btnCollapse">Collapse All</button>
+    <button id="btnReset">Reset View</button>
+  </div>
   <svg id="mindmap"></svg>
+  <div class="legend">
+    <span class="legend-item"><span class="legend-dot" style="background:#4b7bec"></span> Application Evaluation</span>
+    <span class="legend-item"><span class="legend-dot" style="background:#26de81"></span> Model Evaluation</span>
+  </div>
+  <div class="mindmap-tooltip" id="tooltip"></div>
   <script>
+    // About toggle
+    document.getElementById('aboutToggle').addEventListener('click', function() {
+      this.classList.toggle('open');
+      document.getElementById('aboutContent').classList.toggle('visible');
+    });
+
     const md = `
-# LLM Evaluation
+# Gen AI Evaluation
 
-## 1. Strategy
+## A. Application Evaluation
 
-### Evaluation Methods
-#### Automated
+### 1. Strategy
+
+#### Evaluation Methods
+##### Automated
 - LLM as a Judge
 - Rule-Based
-#### Manual
+##### Manual
 - Human Review
 
-### Test Set Design
-#### Functional Coverage
+#### Test Set Design
+##### Functional Coverage
 - Representative Scenarios (per capability)
 - Variants / Corners (difficulty, modality, persona, prompt style)
 - Negative Controls (graceful refusal)
-#### Robustness & Safety Suite
+##### Robustness & Safety Suite
 - Edge Cases
 - Stress
 - Adversarial Cases (malicious attempts)
 
-### Dataset Generation
+#### Dataset Generation
 - Golden Dataset
 - Human-Labeled Data
 - Synthetic Data
 - Real User Data
 
-### Evaluation Design
+#### Evaluation Design
 - Pass / Fail
 - Scoring
 - Human Review
 
-## 2. Accuracy
-
-### Capability Evaluation
+### 2. Accuracy
 
 #### Response Quality
 - Task Quality
@@ -102,18 +270,16 @@
 - Factuality
 - Consistency
 
-#### Context Provision Accuracy
-
-##### Context Sourcing
-###### RAG Sourcing
+#### Context Sourcing
+##### RAG Sourcing
 - Recall
 - Precision
-###### Non-RAG Sourcing (Tools/DB/API)
+##### Non-RAG Sourcing (Tools/DB/API)
 - API Selection
 - Parameter Accuracy
 - Query Generation
 
-##### Grounded Accuracy
+#### Grounded Accuracy
 - Evidence Use Rate
 - Citation Correctness
 - Unsupported Claim Rate
@@ -147,92 +313,122 @@
 - Graceful Recovery
 - Safety Compliance
 
-## 3. Performance
+### 3. Performance
 
-### Latency
+#### Latency
 - Time to First Token (TTFT)
 - End-to-End Latency
 - Throughput
 - Streaming Stability
 - Responsiveness
 
-### Cost
+#### Cost
 - Per Model Call
 - End-to-End Journey Cost
 - Token Usage Efficiency
 
-### Context & Memory Efficiency
+#### Context & Memory Efficiency
 - Context Size vs Quality Curve
 - Memory Size vs Relevance Curve
 
-### Load Testing
+#### Load Testing
 - Concurrency Limit
 - Peak Load Behavior
 
-### Reliability
+#### Reliability
 - Retry Mechanism
 - Graceful Degradation
 
-### Capability-Specific Performance
-#### RAG Performance
+#### Capability-Specific Performance
+##### RAG Performance
 - Retrieval Latency
 - Indexing Throughput
 - Embedding Cost
 - Chunk Size vs Accuracy Tradeoff
-#### Agent Performance
+##### Agent Performance
 - Per-Turn Latency
 - Cumulative Turn Cost
 - Multi-Agent Coordination Overhead
 - Tool Call Parallelism Gains
-#### Tool Execution Performance
+##### Tool Execution Performance
 - Tool Call Latency
 - Sequential vs Parallel Execution
 - External API Rate Limits
-#### Multimodal Performance
+##### Multimodal Performance
 - Audio/Image Processing Latency
 - Token Cost for Visual Inputs
 - Streaming Latency for Voice
 
-## 4. Safety
+### 4. Safety
 
-### Prompt & Output Guardrails
+#### Prompt & Output Guardrails
 - Prompt Injection
 - Jailbreaking
 - Policy Compliance
 - Output Constraints Enforcement
 - Ethical Constraints
 
-### Privacy & Data Handling
+#### Privacy & Data Handling
 - PII Protection
 - Role-Based Access
 
-### Bias & Fairness
+#### Bias & Fairness
 - Demographic Parity
 - Stereotyping Detection
 - Representation Balance
 
-### Content Safety
+#### Content Safety
 - Toxic Output Detection
 - Harmful Content Filtering
 - Sensitive Topic Handling
 
-### Capability-Specific Safety
-#### RAG Safety
+#### Capability-Specific Safety
+##### RAG Safety
 - Document/Index Poisoning
 - Retrieved Content Leakage
 - Adversarial Retrieval
-#### Agent Safety
+##### Agent Safety
 - Action Boundary Enforcement
 - Autonomy & Budget Limits
 - Runaway Prevention & Scope Drift
-#### Tool Safety
+##### Tool Safety
 - Tool Boundary Enforcement
 - Auth/Permission Correctness
 - Harmful Action Prevention
-#### Memory Safety
+##### Memory Safety
 - Stored PII Management
 - Memory Poisoning
 - Cross-Session Leakage
+
+## B. Model Evaluation
+
+### 1. Dataset Curation
+- Representative Queries (simple, complex, edge cases)
+- Ground Truth / Reference Answers
+- Out-of-Scope & Guardrail Test Cases
+
+### 2. Accuracy
+- Response Correctness
+- Hallucination Rate
+- Consistency Across Runs
+- Edge Case Handling
+
+### 3. Performance
+- Time to First Token (TTFT)
+- End-to-End Latency
+- Tokens per Second
+- Context Window Limits
+
+### 4. Cost
+- Input / Output Token Pricing
+- Cost per Request
+- Scaling Viability
+
+### 5. Guardrails
+- Harmful Content Refusal
+- Jailbreak Resistance
+- Prompt Injection Resistance
+- Policy Compliance
 `;
 
     const { Transformer } = window.markmap;
@@ -241,28 +437,223 @@
 
     const { Markmap } = window.markmap;
 
-    const palette = ['#818cf8','#22d3ee','#fbbf24','#f87171','#34d399','#f472b6','#a78bfa','#2dd4bf'];
-    let colorIdx = 0;
+    // Assign branch colors based on index (first child = Application, second = Model)
+    if (root.children && root.children.length >= 2) {
+      root.children[0]._branchColor = '#4b7bec';
+      root.children[1]._branchColor = '#26de81';
+    }
 
     const mm = Markmap.create('#mindmap', {
       colorFreezeLevel: 2,
       initialExpandLevel: 2,
-      maxWidth: 300,
-      paddingX: 16,
+      maxWidth: 400,
+      paddingX: 24,
       color: (node) => {
-        if (!node.parent) return '#e2e8f0';
-        // Find root branch ancestor
+        if (!node.parent) return '#d97706'; // root = amber
+        // Walk up to the top-level branch (child of root)
         let n = node;
         while (n.parent && n.parent.parent) n = n.parent;
-        if (!n._branchColor) {
-          n._branchColor = palette[colorIdx++ % palette.length];
-        }
-        return n._branchColor;
+        // Use pre-assigned color or fallback
+        return n._branchColor || '#4b7bec';
       },
-      spacingVertical: 12,
+      spacingVertical: 18,
       spacingHorizontal: 120,
       autoFit: true,
     }, root);
+
+    // Controls - manipulate the internal d3 hierarchy nodes
+    document.getElementById('btnExpand').addEventListener('click', () => {
+      const svg = document.getElementById('mindmap');
+      const g = svg.querySelector('g');
+      // Click all collapsed circles (those with filled appearance) to expand
+      // Use markmap's internal state via d3 selection
+      const allNodes = d3.select(svg).selectAll('g.markmap-node');
+      allNodes.each(function() {
+        const d = this.__data__;
+        if (d && d.data && d.data.payload) {
+          d.data.payload.fold = 0;
+        }
+      });
+      mm.renderData();
+      mm.fit();
+    });
+    document.getElementById('btnCollapse').addEventListener('click', () => {
+      const svg = document.getElementById('mindmap');
+      const allNodes = d3.select(svg).selectAll('g.markmap-node');
+      allNodes.each(function() {
+        const d = this.__data__;
+        if (d && d.data && d.depth >= 1 && d.data.children && d.data.children.length) {
+          if (!d.data.payload) d.data.payload = {};
+          d.data.payload.fold = 1;
+        }
+      });
+      mm.renderData();
+      mm.fit();
+    });
+    document.getElementById('btnReset').addEventListener('click', () => {
+      const svg = document.getElementById('mindmap');
+      const allNodes = d3.select(svg).selectAll('g.markmap-node');
+      allNodes.each(function() {
+        const d = this.__data__;
+        if (d && d.data) {
+          if (!d.data.payload) d.data.payload = {};
+          d.data.payload.fold = d.depth >= 2 ? 1 : 0;
+        }
+      });
+      mm.renderData();
+      mm.fit();
+    });
+
+    // ── Tooltips and navigation links ──
+
+    const baseUrl = './';
+
+    const nodeMetadata = {
+      'A. Application Evaluation': {
+        tooltip: 'Evaluate your GenAI application end-to-end: strategy, accuracy, performance, and safety.',
+        link: null
+      },
+      '1. Strategy': {
+        tooltip: 'Define evaluation methods, test set design, dataset generation, and scoring approaches.',
+        link: baseUrl + 'strategy/'
+      },
+      '2. Accuracy': {
+        tooltip: 'Measure whether the system produces correct, grounded, and complete outputs across all capabilities.',
+        link: baseUrl + 'accuracy/'
+      },
+      'Response Quality': {
+        tooltip: 'Evaluate task fulfillment, instruction following, factuality, and consistency of generated responses.',
+        link: baseUrl + 'accuracy/response-quality/'
+      },
+      'Context Sourcing': {
+        tooltip: 'Evaluate RAG retrieval quality (recall/precision) and non-RAG sourcing (API selection, parameter accuracy).',
+        link: baseUrl + 'accuracy/context-sourcing/'
+      },
+      'Grounded Accuracy': {
+        tooltip: 'Assess faithfulness to context, citation correctness, unsupported claims, and hallucination detection.',
+        link: baseUrl + 'accuracy/grounded-accuracy/'
+      },
+      'Memory': {
+        tooltip: 'Evaluate memory correctness, recall relevance, and update correctness across conversations.',
+        link: baseUrl + 'accuracy/memory/'
+      },
+      'Agentic Evaluation': {
+        tooltip: 'Evaluate multi-agent systems — tool selection, task completion, trajectory quality, and planning.',
+        link: baseUrl + 'accuracy/agentic/'
+      },
+      'Multi-Modal I/O': {
+        tooltip: 'Evaluate text streaming, voice (ASR, turn-taking), vision (OCR, visual tasks), and cross-modal stability.',
+        link: baseUrl + 'accuracy/multi-modal/'
+      },
+      '3. Performance': {
+        tooltip: 'Measure latency, cost, throughput, reliability, and scalability under realistic conditions.',
+        link: baseUrl + 'performance/'
+      },
+      '4. Safety': {
+        tooltip: 'Evaluate guardrails, privacy, bias/fairness, harmful content, prompt injection, and data leakage.',
+        link: baseUrl + 'safety/'
+      },
+      'B. Model Evaluation': {
+        tooltip: 'Evaluate and compare LLM models before selection — accuracy, performance, safety, and capability fit.',
+        link: baseUrl + 'model-evaluation/'
+      },
+      '1. Dataset Curation': {
+        tooltip: 'Build representative test sets with ground truth, edge cases, and guardrail tests.',
+        link: baseUrl + 'model-evaluation/#dataset-curation'
+      },
+      '2. Accuracy': {
+        tooltip: 'Evaluate correctness, hallucination rate, consistency, and edge case handling.',
+        link: baseUrl + 'model-evaluation/#accuracy'
+      },
+      '3. Performance': {
+        tooltip: 'Measure TTFT, end-to-end latency, tokens per second, and context window limits.',
+        link: baseUrl + 'model-evaluation/#performance'
+      },
+      '4. Cost': {
+        tooltip: 'Compare token pricing, cost per request, and scaling viability across models.',
+        link: baseUrl + 'model-evaluation/#cost'
+      },
+      '5. Guardrails': {
+        tooltip: 'Test harmful content refusal, jailbreak resistance, prompt injection, and policy compliance.',
+        link: baseUrl + 'model-evaluation/#guardrails'
+      }
+    };
+
+    // Pre-compute all data nodes that belong to the Model branch
+    const modelNodes = new Set();
+    function collectModelNodes(node) {
+      modelNodes.add(node);
+      if (node.children) node.children.forEach(c => collectModelNodes(c));
+    }
+    if (root.children && root.children[1]) {
+      collectModelNodes(root.children[1]);
+    }
+
+    // Apply background colors and tooltips/links after rendering
+    function applyNodeStyles() {
+      const tooltip = document.getElementById('tooltip');
+      const nodes = document.querySelectorAll('.markmap-node');
+
+      nodes.forEach(node => {
+        const textEl = node.querySelector('foreignObject div');
+        if (!textEl) return;
+
+        // Access the d3 data binding to find which data node this is
+        const d = node.__data__;
+        let nodeColor;
+
+        if (!d || !d.data) {
+          nodeColor = '#4b7bec';
+        } else if (d.data === root) {
+          nodeColor = '#d97706';
+        } else if (modelNodes.has(d.data)) {
+          nodeColor = '#26de81';
+        } else {
+          nodeColor = '#4b7bec';
+        }
+
+        textEl.style.background = nodeColor;
+
+        // Tooltips and links
+        const text = textEl.textContent.trim();
+        const meta = nodeMetadata[text];
+        if (!meta) return;
+
+        if (meta.link) {
+          node.setAttribute('data-link', meta.link);
+        }
+
+        if (meta.tooltip) {
+          node.addEventListener('mouseenter', (e) => {
+            tooltip.textContent = meta.tooltip;
+            tooltip.classList.add('visible');
+          });
+          node.addEventListener('mousemove', (e) => {
+            tooltip.style.left = (e.clientX + 12) + 'px';
+            tooltip.style.top = (e.clientY + 12) + 'px';
+          });
+          node.addEventListener('mouseleave', () => {
+            tooltip.classList.remove('visible');
+          });
+        }
+
+        if (meta.link) {
+          textEl.style.cursor = 'pointer';
+          textEl.addEventListener('click', (e) => {
+            e.stopPropagation();
+            window.open(meta.link, '_blank');
+          });
+        }
+      });
+    }
+
+    setTimeout(applyNodeStyles, 800);
+
+    // Re-apply on any interaction (expand/collapse changes DOM)
+    const observer = new MutationObserver(() => {
+      setTimeout(applyNodeStyles, 100);
+    });
+    observer.observe(document.getElementById('mindmap'), { childList: true, subtree: true });
   </script>
 </body>
 </html>
